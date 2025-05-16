@@ -325,7 +325,11 @@ def handle_message():
             
             with st.chat_message("assistant", avatar=logo_path):
                 typing_placeholder = st.empty()
-                typing_placeholder.markdown("_Digitando..._")
+                typing_placeholder.markdown("""
+                    <div style="padding: 8px; font-style: italic;">
+                        Digitando...
+                    </div>
+                """, unsafe_allow_html=True)
                 
                 with st.spinner():
                     current_session_id = "" if is_first_message else st.session_state.session_id
@@ -589,7 +593,7 @@ st.markdown("""
         border-radius: 0.5rem;
         margin-bottom: 0.5rem;
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
     
     .user-message {
@@ -808,8 +812,11 @@ def handle_message_with_input(user_input):
             
             with st.chat_message("assistant", avatar=logo_path):
                 typing_placeholder = st.empty()
-                typing_placeholder.markdown("_Digitando..._")
-                
+                typing_placeholder.markdown("""
+                    <div style="padding: 8px; font-style: italic;">
+                        Digitando...
+                    </div>
+                """, unsafe_allow_html=True)                
                 with st.spinner():
                     current_session_id = "" if is_first_message else st.session_state.session_id
                     rag_context = get_rag_context()
@@ -977,11 +984,7 @@ if check_password():
         messages_container = st.container()
         
         st.markdown("<div style='height: 120px;'></div>", unsafe_allow_html=True)
-        
-        st.markdown('<div class="input-container">', unsafe_allow_html=True)
-        
-        st.markdown('<div class="input-container">', unsafe_allow_html=True)
-
+                
         col1, col2, col3 = st.columns([5, 1, 1])
 
         with col1:
