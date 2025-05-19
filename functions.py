@@ -69,7 +69,7 @@ def format_context(context, source="Contexto Adicional"):
     return f"\n\n{source}:\n{context}\n\n"
 
 #ALTERAR
-def generate_chat_prompt(user_message, conversation_history=None, context=""):
+def generate_chat_prompt(user_message, conversation_history=None, context="", quiz=None, quiz_json=None):
     """
     Gera um prompt de chat completo com histórico de conversa e contexto opcional.
     """
@@ -106,18 +106,36 @@ def generate_chat_prompt(user_message, conversation_history=None, context=""):
         conversation_context += f"{role}: {message.get('content')}\n"
       conversation_context += "\n"
 
+    if quiz_json:
+        full_prompt += (
+            """Agora, com base nessa conversa e no conteúdo abaixo, escolha UMA pergunta de quiz coerente com o que foi explicado. 
+            Apresente a pergunta e alternativas (A-D), mas **não diga a resposta correta"""
+            f"CONTEÚDO DO QUIZ:\n{json.dumps(quiz_json, ensure_ascii=False, indent=2)}"
+        )
+
     full_prompt = f"{system_prompt}\n\n{conversation_context}{context}Usuário: {user_message}\n\nAssistente:"
-    
+
     return full_prompt
 
 #ALTERAR
-def invoke_bedrock_model(prompt, inference_profile_arn, model_params=None):
+def invoke_bedrock_model(prompt, inference_profile_arn, model_params=None, quiz=None):
     """
     Invoca um modelo no Amazon Bedrock usando um Inference Profile.
+    Agora com suporte integrado para quizzes.
+    
+    Args:
+        prompt (str): O prompt completo para o modelo
+        inference_profile_arn (str): ARN do perfil de inferência
+        model_params (dict, optional): Parâmetros do modelo. Defaults to None.
+        quiz (dict, optional): Dados do quiz se aplicável. Defaults to None.
+    
+    Returns:
+        dict: Resposta do modelo com estrutura enriquecida para quizzes
     """
+    # Parâmetros padrão do modelo
     if model_params is None:
         model_params = {
-            "temperature": 0.7,
+            "temperature": 0.7 if not quiz else 0.3,  # Mais determinístico para quizzes
             "top_p": 0.9,
             "top_k": 200,
             "max_tokens": 1024,
@@ -126,55 +144,84 @@ def invoke_bedrock_model(prompt, inference_profile_arn, model_params=None):
     bedrock_runtime = get_boto3_client('bedrock-runtime')
 
     if not bedrock_runtime:
-        return {
-        "error": "Não foi possível conectar ao serviço Bedrock.",
-        "answer": "Erro de conexão com o modelo.",
-        "sessionId": str(uuid.uuid4())
+        error_response = {
+            "error": "Não foi possível conectar ao serviço Bedrock.",
+            "answer": "Erro de conexão com o modelo.",
+            "sessionId": str(uuid.uuid4())
         }
+        if quiz:
+            error_response.update({"quiz": quiz, "is_quiz": True})
+        return error_response
 
     try:
+        # Estrutura da mensagem considerando quizzes
+        messages = [{
+            "role": "user",
+            "content": [{"type": "text", "text": prompt}]
+        }]
+
+        # Se for um quiz, adicionamos instruções especiais
+        if quiz:
+            instructions = (
+                "INSTRUÇÕES ESPECIAIS PARA QUIZ:\n"
+                "1. Apresente a pergunta do quiz exatamente como fornecida\n"
+                "2. Liste as alternativas exatamente como fornecidas\n"
+                "3. Peça ao usuário para responder com A, B, C ou D\n"
+                "4. Não revele a resposta correta\n"
+                "5. Mantenha o tom lúdico e encorajador\n\n"
+            )
+            messages[0]["content"][0]["text"] = instructions + prompt
+
         body = json.dumps({
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": model_params["max_tokens"],
-        "temperature": model_params["temperature"],
-        "top_p": model_params["top_p"],
-        "top_k": model_params["top_k"],
-        "messages": [
-        {
-        "role": "user",
-        "content": [
-        {
-        "type": "text",
-        "text": prompt
-        }
-    ]
-    }
-    ]
-    })
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": model_params["max_tokens"],
+            "temperature": model_params["temperature"],
+            "top_p": model_params["top_p"],
+            "top_k": model_params["top_k"],
+            "messages": messages,
+            "stop_sequences": ["\n\nUsuário:"] if not quiz else ["\n\nQuiz:"]
+        })
 
         response = bedrock_runtime.invoke_model(
-        modelId=inference_profile_arn,  # Usando o ARN do Inference Profile
-        body=body,
-        contentType="application/json",
-        accept="application/json"
-    )
+            modelId=inference_profile_arn,
+            body=body,
+            contentType="application/json",
+            accept="application/json"
+        )
         
         response_body = json.loads(response['body'].read())
         answer = response_body['content'][0]['text']
-            
-        return {
+        
+        # Estrutura de retorno unificada
+        response_data = {
             "answer": answer,
-            "sessionId": str(uuid.uuid4())
+            "sessionId": str(uuid.uuid4()),
+            "is_quiz": quiz is not None,
+            "timestamp": datetime.now().isoformat()
         }
+        
+        if quiz:
+            response_data.update({
+                "quiz": quiz,
+                "quiz_id": quiz.get("id"),
+                "correct_answer": quiz.get("resposta_correta"),
+                "topic": quiz.get("tema")
+            })
+        
+        return response_data
         
     except Exception as e:
         print(f"ERRO: Falha na invocação do modelo Bedrock: {str(e)}")
-        print(f"ERRO: Exception details: {e}")
-        return {
+        error_response = {
             "error": str(e),
             "answer": f"Ocorreu um erro ao processar sua solicitação: {str(e)}. Por favor, tente novamente.",
-            "sessionId": str(uuid.uuid4())
+            "sessionId": str(uuid.uuid4()),
+            "is_quiz": quiz is not None
         }
+        if quiz:
+            error_response.update({"quiz": quiz})
+        return error_response
+    
 def read_pdf_from_uploaded_file(uploaded_file):
     """Lê o conteúdo de um arquivo PDF carregado pelo Streamlit."""
     try:

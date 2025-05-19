@@ -1,0 +1,1434 @@
+{
+  "quiz": [
+    {
+      "id": 1,
+      "pergunta": "Quem descobriu o Brasil?",
+      "alternativas": {
+        "A": "Pedro Álvares Cabral",
+        "B": "Cristóvão Colombo",
+        "C": "Dom Pedro I",
+        "D": "Tiradentes"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "fácil",
+      "tema": "História"
+    },
+    {
+      "id": 2,
+      "pergunta": "Quantos lados tem um triângulo?",
+      "alternativas": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 3,
+      "pergunta": "Qual é o maior planeta do Sistema Solar?",
+      "alternativas": {
+        "A": "Terra",
+        "B": "Júpiter",
+        "C": "Saturno",
+        "D": "Marte"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 4,
+      "pergunta": "Qual destes animais é um mamífero?",
+      "alternativas": {
+        "A": "Tubarão",
+        "B": "Pinguim",
+        "C": "Golfinho",
+        "D": "Cobra"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 5,
+      "pergunta": "Qual é a capital do Brasil?",
+      "alternativas": {
+        "A": "Rio de Janeiro",
+        "B": "São Paulo",
+        "C": "Brasília",
+        "D": "Belo Horizonte"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 6,
+      "pergunta": "Qual destes é um exemplo de ser vivo?",
+      "alternativas": {
+        "A": "Pedra",
+        "B": "Água",
+        "C": "Planta",
+        "D": "Vento"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 7,
+      "pergunta": "Qual é o antônimo de 'dia'?",
+      "alternativas": {
+        "A": "Sol",
+        "B": "Noite",
+        "C": "Luz",
+        "D": "Tarde"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Português"
+    },
+    {
+      "id": 8,
+      "pergunta": "Quanto é 5 + 7?",
+      "alternativas": {
+        "A": "10",
+        "B": "11",
+        "C": "12",
+        "D": "13"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 9,
+      "pergunta": "Qual destes é um material reciclável?",
+      "alternativas": {
+        "A": "Papel",
+        "B": "Osso",
+        "C": "Terra",
+        "D": "Fumaça"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 10,
+      "pergunta": "Qual é a cor do céu em um dia sem nuvens?",
+      "alternativas": {
+        "A": "Verde",
+        "B": "Vermelho",
+        "C": "Azul",
+        "D": "Preto"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 11,
+      "pergunta": "Quantos dias tem uma semana?",
+      "alternativas": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Conhecimentos Gerais"
+    },
+    {
+      "id": 12,
+      "pergunta": "Qual destes é um instrumento musical?",
+      "alternativas": {
+        "A": "Violão",
+        "B": "Martelo",
+        "C": "Lápis",
+        "D": "Vassoura"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "fácil",
+      "tema": "Artes"
+    },
+    {
+      "id": 13,
+      "pergunta": "Qual é o nome do nosso planeta?",
+      "alternativas": {
+        "A": "Marte",
+        "B": "Vênus",
+        "C": "Terra",
+        "D": "Júpiter"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 14,
+      "pergunta": "Qual destes é um doce?",
+      "alternativas": {
+        "A": "Brigadeiro",
+        "B": "Sal",
+        "C": "Pimenta",
+        "D": "Vinagre"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "fácil",
+      "tema": "Conhecimentos Gerais"
+    },
+    {
+      "id": 15,
+      "pergunta": "Qual é a estação do ano que vem depois do verão?",
+      "alternativas": {
+        "A": "Primavera",
+        "B": "Inverno",
+        "C": "Outono",
+        "D": "Verão de novo"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 16,
+      "pergunta": "Quantos continentes existem na Terra?",
+      "alternativas": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 17,
+      "pergunta": "Qual é o maior animal terrestre?",
+      "alternativas": {
+        "A": "Tubarão-branco",
+        "B": "Elefante-africano",
+        "C": "Girafa",
+        "D": "Urso-polar"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 18,
+      "pergunta": "Qual é a capital de Minas Gerais?",
+      "alternativas": {
+        "A": "São Paulo",
+        "B": "Rio de Janeiro",
+        "C": "Belo Horizonte",
+        "D": "Salvador"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 19,
+      "pergunta": "Qual destes números é par?",
+      "alternativas": {
+        "A": "13",
+        "B": "21",
+        "C": "28",
+        "D": "35"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 20,
+      "pergunta": "Que parte da planta absorve água do solo?",
+      "alternativas": {
+        "A": "Folhas",
+        "B": "Flores",
+        "C": "Raízes",
+        "D": "Frutos"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 21,
+      "pergunta": "Qual é o plural de 'cão'?",
+      "alternativas": {
+        "A": "Cães",
+        "B": "Cãos",
+        "C": "Cãezes",
+        "D": "Cãozinhos"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "fácil",
+      "tema": "Português"
+    },
+    {
+      "id": 22,
+      "pergunta": "Quanto é 3 x 4?",
+      "alternativas": {
+        "A": "7",
+        "B": "12",
+        "C": "9",
+        "D": "10"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 23,
+      "pergunta": "Qual destes não é um tipo de fruta?",
+      "alternativas": {
+        "A": "Maçã",
+        "B": "Cenoura",
+        "C": "Banana",
+        "D": "Uva"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Conhecimentos Gerais"
+    },
+    {
+      "id": 24,
+      "pergunta": "Qual é o nome do presidente do Brasil que declarou a independência?",
+      "alternativas": {
+        "A": "Dom Pedro I",
+        "B": "Dom Pedro II",
+        "C": "Getúlio Vargas",
+        "D": "Juscelino Kubitschek"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "média",
+      "tema": "História"
+    },
+    {
+      "id": 25,
+      "pergunta": "Qual é o maior oceano do mundo?",
+      "alternativas": {
+        "A": "Atlântico",
+        "B": "Índico",
+        "C": "Pacífico",
+        "D": "Ártico"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 26,
+      "pergunta": "Que tipo de animal é uma baleia?",
+      "alternativas": {
+        "A": "Peixe",
+        "B": "Anfíbio",
+        "C": "Mamífero",
+        "D": "Réptil"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 27,
+      "pergunta": "Qual é o oposto de 'alto'?",
+      "alternativas": {
+        "A": "Longo",
+        "B": "Baixo",
+        "C": "Largo",
+        "D": "Pesado"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Português"
+    },
+    {
+      "id": 28,
+      "pergunta": "Quantos zeros tem o número mil?",
+      "alternativas": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 29,
+      "pergunta": "Qual destes materiais é líquido à temperatura ambiente?",
+      "alternativas": {
+        "A": "Ferro",
+        "B": "Água",
+        "C": "Madeira",
+        "D": "Sal"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 30,
+      "pergunta": "Qual é a cor da folha de uma árvore saudável?",
+      "alternativas": {
+        "A": "Vermelha",
+        "B": "Azul",
+        "C": "Verde",
+        "D": "Preta"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 31,
+      "pergunta": "Qual destes é um meio de transporte aquático?",
+      "alternativas": {
+        "A": "Avião",
+        "B": "Navio",
+        "C": "Ônibus",
+        "D": "Bicicleta"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Conhecimentos Gerais"
+    },
+    {
+      "id": 32,
+      "pergunta": "Qual é o nome do nosso sistema monetário?",
+      "alternativas": {
+        "A": "Dólar",
+        "B": "Euro",
+        "C": "Real",
+        "D": "Peso"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Conhecimentos Gerais"
+    },
+    {
+      "id": 33,
+      "pergunta": "Que objeto usamos para ver coisas muito pequenas?",
+      "alternativas": {
+        "A": "Telescópio",
+        "B": "Microscópio",
+        "C": "Binóculos",
+        "D": "Lupa"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 34,
+      "pergunta": "Qual é a capital da França?",
+      "alternativas": {
+        "A": "Londres",
+        "B": "Berlim",
+        "C": "Paris",
+        "D": "Roma"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 35,
+      "pergunta": "Quantos meses tem um ano?",
+      "alternativas": {
+        "A": "10",
+        "B": "11",
+        "C": "12",
+        "D": "13"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Conhecimentos Gerais"
+    },
+    {
+      "id": 36,
+      "pergunta": "Qual destes não é um planeta do Sistema Solar?",
+      "alternativas": {
+        "A": "Vênus",
+        "B": "Marte",
+        "C": "Plutão",
+        "D": "Júpiter"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 37,
+      "pergunta": "Qual é a cor do Sol?",
+      "alternativas": {
+        "A": "Azul",
+        "B": "Vermelho",
+        "C": "Amarelo",
+        "D": "Verde"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 38,
+      "pergunta": "Que letra vem depois do 'B' no alfabeto?",
+      "alternativas": {
+        "A": "A",
+        "B": "C",
+        "C": "D",
+        "D": "E"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Português"
+    },
+    {
+      "id": 39,
+      "pergunta": "Quanto é 15 - 8?",
+      "alternativas": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 40,
+      "pergunta": "Qual destes é um tipo de vegetal?",
+      "alternativas": {
+        "A": "Maçã",
+        "B": "Alface",
+        "C": "Leite",
+        "D": "Pão"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 41,
+      "pergunta": "Qual é o maior mamífero do mundo?",
+      "alternativas": {
+        "A": "Elefante",
+        "B": "Girafa",
+        "C": "Baleia-azul",
+        "D": "Tubarão-branco"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 42,
+      "pergunta": "Qual é a capital dos Estados Unidos?",
+      "alternativas": {
+        "A": "Nova York",
+        "B": "Los Angeles",
+        "C": "Washington, D.C.",
+        "D": "Chicago"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 43,
+      "pergunta": "Quantas patas tem uma aranha?",
+      "alternativas": {
+        "A": "4",
+        "B": "6",
+        "C": "8",
+        "D": "10"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 44,
+      "pergunta": "Qual destes é um metal?",
+      "alternativas": {
+        "A": "Madeira",
+        "B": "Ferro",
+        "C": "Plástico",
+        "D": "Vidro"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 45,
+      "pergunta": "Qual é o nome do maior osso do corpo humano?",
+      "alternativas": {
+        "A": "Fêmur",
+        "B": "Crânio",
+        "C": "Costela",
+        "D": "Úmero"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 46,
+      "pergunta": "Qual é o nome da festa popular brasileira com desfiles de escolas de samba?",
+      "alternativas": {
+        "A": "Festa Junina",
+        "B": "Carnaval",
+        "C": "Natal",
+        "D": "Réveillon"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Cultura"
+    },
+    {
+      "id": 47,
+      "pergunta": "Qual é a forma geométrica de uma bola de futebol?",
+      "alternativas": {
+        "A": "Cubo",
+        "B": "Esfera",
+        "C": "Pirâmide",
+        "D": "Cilindro"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 48,
+      "pergunta": "Qual destes países não faz fronteira com o Brasil?",
+      "alternativas": {
+        "A": "Argentina",
+        "B": "Paraguai",
+        "C": "Chile",
+        "D": "Colômbia"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 49,
+      "pergunta": "Qual é o nome da festa que comemora a independência do Brasil?",
+      "alternativas": {
+        "A": "Carnaval",
+        "B": "Festa Junina",
+        "C": "7 de Setembro",
+        "D": "Natal"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "História"
+    },
+    {
+      "id": 50,
+      "pergunta": "Qual é o nome do instrumento que mede a temperatura?",
+      "alternativas": {
+        "A": "Termômetro",
+        "B": "Barômetro",
+        "C": "Hidrômetro",
+        "D": "Velocímetro"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 51,
+      "pergunta": "Qual é o nome do maior rio do Brasil?",
+      "alternativas": {
+        "A": "Rio São Francisco",
+        "B": "Rio Amazonas",
+        "C": "Rio Paraná",
+        "D": "Rio Tietê"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 52,
+      "pergunta": "Qual destes não é um tipo de nuvem?",
+      "alternativas": {
+        "A": "Cumulus",
+        "B": "Stratus",
+        "C": "Cirrus",
+        "D": "Florestus"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 53,
+      "pergunta": "Qual é o nome do processo em que as plantas produzem seu alimento?",
+      "alternativas": {
+        "A": "Respiração",
+        "B": "Fotossíntese",
+        "C": "Digestão",
+        "D": "Evaporação"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 54,
+      "pergunta": "Quantos ossos tem o corpo humano?",
+      "alternativas": {
+        "A": "106",
+        "B": "206",
+        "C": "306",
+        "D": "406"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 55,
+      "pergunta": "Qual é o nome da camada de gases que envolve a Terra?",
+      "alternativas": {
+        "A": "Hidrosfera",
+        "B": "Atmosfera",
+        "C": "Litosfera",
+        "D": "Biosfera"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 56,
+      "pergunta": "Qual destes não é um estado físico da água?",
+      "alternativas": {
+        "A": "Sólido",
+        "B": "Líquido",
+        "C": "Gasoso",
+        "D": "Pétreo"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 57,
+      "pergunta": "Qual é o nome do satélite natural da Terra?",
+      "alternativas": {
+        "A": "Marte",
+        "B": "Vênus",
+        "C": "Lua",
+        "D": "Sol"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 58,
+      "pergunta": "Qual é o nome do instrumento que mede a força do vento?",
+      "alternativas": {
+        "A": "Termômetro",
+        "B": "Anemômetro",
+        "C": "Barômetro",
+        "D": "Hidrômetro"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 59,
+      "pergunta": "Qual é o nome da capital de São Paulo?",
+      "alternativas": {
+        "A": "São Paulo",
+        "B": "Rio de Janeiro",
+        "C": "Belo Horizonte",
+        "D": "Curitiba"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "fácil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 60,
+      "pergunta": "Qual destes não é um tipo de poluição?",
+      "alternativas": {
+        "A": "Sonora",
+        "B": "Visual",
+        "C": "Do ar",
+        "D": "Do amor"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "fácil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 61,
+      "pergunta": "Qual é o nome do processo de transformação de lagarta em borboleta?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Metamorfose",
+        "C": "Respiração",
+        "D": "Digestão"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 62,
+      "pergunta": "Qual é o nome do instrumento que mede a pressão arterial?",
+      "alternativas": {
+        "A": "Termômetro",
+        "B": "Estetoscópio",
+        "C": "Esfigmomanômetro",
+        "D": "Otoscópio"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 63,
+      "pergunta": "Qual é o nome do maior deserto do mundo?",
+      "alternativas": {
+        "A": "Deserto do Saara",
+        "B": "Deserto de Atacama",
+        "C": "Deserto da Arábia",
+        "D": "Deserto de Gobi"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 64,
+      "pergunta": "Qual é o nome da capital da Argentina?",
+      "alternativas": {
+        "A": "Buenos Aires",
+        "B": "Montevidéu",
+        "C": "Santiago",
+        "D": "Lima"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 65,
+      "pergunta": "Qual é o nome do maior osso do braço?",
+      "alternativas": {
+        "A": "Fêmur",
+        "B": "Tíbia",
+        "C": "Úmero",
+        "D": "Rádio"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 66,
+      "pergunta": "Qual é o nome do processo de respiração das plantas?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Transpiração",
+        "C": "Evaporação",
+        "D": "Respiração celular"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 67,
+      "pergunta": "Qual é o nome da capital do Japão?",
+      "alternativas": {
+        "A": "Pequim",
+        "B": "Tóquio",
+        "C": "Seul",
+        "D": "Bangkok"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 68,
+      "pergunta": "Qual é o nome do instrumento que mede a umidade do ar?",
+      "alternativas": {
+        "A": "Termômetro",
+        "B": "Hidrômetro",
+        "C": "Higrômetro",
+        "D": "Barômetro"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 69,
+      "pergunta": "Qual é o nome do processo de formação de novas palavras?",
+      "alternativas": {
+        "A": "Pontuação",
+        "B": "Derivação",
+        "C": "Conjugação",
+        "D": "Declinação"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Português"
+    },
+    {
+      "id": 70,
+      "pergunta": "Qual é o nome da capital da Rússia?",
+      "alternativas": {
+        "A": "Kiev",
+        "B": "Moscou",
+        "C": "São Petersburgo",
+        "D": "Varsóvia"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 71,
+      "pergunta": "Qual é o nome do processo de transformação do gelo em água?",
+      "alternativas": {
+        "A": "Evaporação",
+        "B": "Condensação",
+        "C": "Fusão",
+        "D": "Solidificação"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 72,
+      "pergunta": "Qual é o nome do maior país do mundo em extensão territorial?",
+      "alternativas": {
+        "A": "China",
+        "B": "Estados Unidos",
+        "C": "Rússia",
+        "D": "Canadá"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 73,
+      "pergunta": "Qual é o nome do processo de transformação da água em vapor?",
+      "alternativas": {
+        "A": "Condensação",
+        "B": "Solidificação",
+        "C": "Evaporação",
+        "D": "Fusão"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 74,
+      "pergunta": "Qual é o nome do maior oceano do mundo?",
+      "alternativas": {
+        "A": "Oceano Atlântico",
+        "B": "Oceano Índico",
+        "C": "Oceano Pacífico",
+        "D": "Oceano Ártico"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 75,
+      "pergunta": "Qual é o nome do processo de transformação do vapor em água?",
+      "alternativas": {
+        "A": "Evaporação",
+        "B": "Condensação",
+        "C": "Solidificação",
+        "D": "Fusão"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 76,
+      "pergunta": "Qual é o nome do maior continente do mundo?",
+      "alternativas": {
+        "A": "América",
+        "B": "África",
+        "C": "Europa",
+        "D": "Ásia"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 77,
+      "pergunta": "Qual é o nome do processo de transformação da água em gelo?",
+      "alternativas": {
+        "A": "Evaporação",
+        "B": "Condensação",
+        "C": "Solidificação",
+        "D": "Fusão"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 78,
+      "pergunta": "Qual é o nome do menor país do mundo?",
+      "alternativas": {
+        "A": "Mônaco",
+        "B": "Vaticano",
+        "C": "San Marino",
+        "D": "Liechtenstein"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 79,
+      "pergunta": "Qual é o nome do processo de transformação da luz em energia pelas plantas?",
+      "alternativas": {
+        "A": "Respiração",
+        "B": "Fotossíntese",
+        "C": "Transpiração",
+        "D": "Digestão"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 80,
+      "pergunta": "Qual é o nome do maior animal do mundo?",
+      "alternativas": {
+        "A": "Elefante-africano",
+        "B": "Tubarão-branco",
+        "C": "Baleia-azul",
+        "D": "Girafa"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 81,
+      "pergunta": "Qual é o nome do processo de transformação do alimento em energia?",
+      "alternativas": {
+        "A": "Respiração",
+        "B": "Fotossíntese",
+        "C": "Digestão",
+        "D": "Circulação"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 82,
+      "pergunta": "Qual é o nome do maior rio do mundo?",
+      "alternativas": {
+        "A": "Rio Nilo",
+        "B": "Rio Amazonas",
+        "C": "Rio Yangtzé",
+        "D": "Rio Mississipi"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 83,
+      "pergunta": "Qual é o nome do processo de transformação do alimento em nutrientes?",
+      "alternativas": {
+        "A": "Respiração",
+        "B": "Fotossíntese",
+        "C": "Digestão",
+        "D": "Circulação"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Ciências"
+    },
+    {
+      "id": 84,
+      "pergunta": "Qual é o nome do maior lago do mundo?",
+      "alternativas": {
+        "A": "Lago Vitória",
+        "B": "Lago Titicaca",
+        "C": "Mar Cáspio",
+        "D": "Lago Superior"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 85,
+      "pergunta": "Qual é o nome do processo de transformação do alimento em energia para as células?",
+      "alternativas": {
+        "A": "Respiração celular",
+        "B": "Fotossíntese",
+        "C": "Digestão",
+        "D": "Circulação"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 86,
+      "pergunta": "Qual é o nome do maior vulcão do mundo?",
+      "alternativas": {
+        "A": "Monte Everest",
+        "B": "Monte Kilimanjaro",
+        "C": "Mauna Loa",
+        "D": "Monte Fuji"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 87,
+      "pergunta": "Qual é o nome do processo de transformação do oxigênio em gás carbônico?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Digestão",
+        "D": "Circulação"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 88,
+      "pergunta": "Qual é o nome do maior deserto de gelo do mundo?",
+      "alternativas": {
+        "A": "Deserto do Saara",
+        "B": "Deserto de Gobi",
+        "C": "Antártida",
+        "D": "Deserto da Arábia"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 89,
+      "pergunta": "Qual é o nome do processo de transformação do gás carbônico em oxigênio?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Digestão",
+        "D": "Circulação"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 90,
+      "pergunta": "Qual é o nome do maior país da América do Sul?",
+      "alternativas": {
+        "A": "Argentina",
+        "B": "Brasil",
+        "C": "Colômbia",
+        "D": "Peru"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "fácil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 91,
+      "pergunta": "Qual é o nome do processo de transformação da seiva bruta em seiva elaborada?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Transpiração",
+        "D": "Circulação"
+      },
+      "resposta_correta": "A",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 92,
+      "pergunta": "Qual é o nome do maior país da África?",
+      "alternativas": {
+        "A": "Nigéria",
+        "B": "Egito",
+        "C": "África do Sul",
+        "D": "Argélia"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 93,
+      "pergunta": "Qual é o nome do processo de perda de água pelas folhas das plantas?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Transpiração",
+        "D": "Circulação"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 94,
+      "pergunta": "Qual é o nome do maior país da Europa?",
+      "alternativas": {
+        "A": "Alemanha",
+        "B": "França",
+        "C": "Rússia",
+        "D": "Reino Unido"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 95,
+      "pergunta": "Qual é o nome do processo de transporte da seiva nas plantas?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Transpiração",
+        "D": "Circulação"
+      },
+      "resposta_correta": "D",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 96,
+      "pergunta": "Qual é o nome do maior país da Oceania?",
+      "alternativas": {
+        "A": "Nova Zelândia",
+        "B": "Austrália",
+        "C": "Papua-Nova Guiné",
+        "D": "Fiji"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 97,
+      "pergunta": "Qual é o nome do processo de absorção de água pelas raízes das plantas?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Absorção",
+        "D": "Circulação"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 98,
+      "pergunta": "Qual é o nome do maior país da América do Norte?",
+      "alternativas": {
+        "A": "Estados Unidos",
+        "B": "Canadá",
+        "C": "México",
+        "D": "Groenlândia"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "difícil",
+      "tema": "Geografia"
+    },
+    {
+      "id": 99,
+      "pergunta": "Qual é o nome do processo de produção de flores e frutos pelas plantas?",
+      "alternativas": {
+        "A": "Fotossíntese",
+        "B": "Respiração",
+        "C": "Reprodução",
+        "D": "Circulação"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Ciências"
+    },
+    {
+      "id": 100,
+      "pergunta": "Qual é o nome do maior país do mundo em população?",
+      "alternativas": {
+        "A": "Índia",
+        "B": "Estados Unidos",
+        "C": "China",
+        "D": "Brasil"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Geografia"
+    },
+    {
+      "id": 101,
+      "pergunta": "Quanto é 8 + 5?",
+      "alternativas": {
+        "A": "11",
+        "B": "12",
+        "C": "13",
+        "D": "14"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 102,
+      "pergunta": "Se uma caixa tem 6 lápis e outra tem 4, quantos lápis têm no total?",
+      "alternativas": {
+        "A": "8",
+        "B": "9",
+        "C": "10",
+        "D": "11"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 103,
+      "pergunta": "Quanto é 15 - 7?",
+      "alternativas": {
+        "A": "6",
+        "B": "7",
+        "C": "8",
+        "D": "9"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 104,
+      "pergunta": "Se João tinha 9 balas e deu 3 para sua irmã, com quantas ficou?",
+      "alternativas": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "fácil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 105,
+      "pergunta": "Quanto é 3 x 4?",
+      "alternativas": {
+        "A": "7",
+        "B": "10",
+        "C": "12",
+        "D": "15"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Matemática"
+    },
+    {
+      "id": 106,
+      "pergunta": "Se cada pacote tem 5 figurinhas, quantas têm 3 pacotes?",
+      "alternativas": {
+        "A": "10",
+        "B": "15",
+        "C": "20",
+        "D": "25"
+      },
+      "resposta_correta": "B",
+      "dificuldade": "média",
+      "tema": "Matemática"
+    },
+    {
+      "id": 107,
+      "pergunta": "Quanto é 20 ÷ 4?",
+      "alternativas": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Matemática"
+    },
+    {
+      "id": 108,
+      "pergunta": "Se 12 balas são divididas igualmente entre 3 amigos, quantas cada um recebe?",
+      "alternativas": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "média",
+      "tema": "Matemática"
+    },
+    {
+      "id": 109,
+      "pergunta": "Qual é o resultado de (7 + 3) x 2?",
+      "alternativas": {
+        "A": "15",
+        "B": "17",
+        "C": "20",
+        "D": "24"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Matemática"
+    },
+    {
+      "id": 110,
+      "pergunta": "Se um sorvete custa R$ 4 e comprei 3, quanto gastarei?",
+      "alternativas": {
+        "A": "R$ 7",
+        "B": "R$ 10",
+        "C": "R$ 12",
+        "D": "R$ 15"
+      },
+      "resposta_correta": "C",
+      "dificuldade": "difícil",
+      "tema": "Matemática"
+    }
+  ]
+}

@@ -9,13 +9,21 @@ from datetime import datetime
 import re
 import base64
 import os
+from quiz_manager import QuizManager
 from functions import (
     generate_chat_prompt, format_context, 
     read_pdf_from_uploaded_file, read_txt_from_uploaded_file, read_csv_from_uploaded_file
 )
+
 PROFILE_NAME = os.environ.get("AWS_PROFILE", "bento-grupo4")
 
 INFERENCE_PROFILE_ARN = "arn:aws:bedrock:us-east-1:851614451056:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+
+with open("users.json", "r") as file:
+    users = json.load(file)
+
+quiz_manager = QuizManager("quiz.json") 
+
 
 def add_javascript():
     """Adiciona JavaScript para melhorar a interação do usuário com o chat"""
@@ -57,6 +65,22 @@ def preprocess_user_message(message):
     Função simples de pré-processamento da mensagem do usuário
     """
     return message
+
+# Função para atualizar pontuação
+def update_user_score(username, points=1):
+    try:
+        with open("users.json", "r+") as file:
+            users = json.load(file)
+            for user in users:
+                if user["user"] == username:
+                    user["score"] = user.get("score", 0) + points
+                    break
+            
+            file.seek(0)
+            json.dump(users, file, indent=4)
+            file.truncate()
+    except Exception as e:
+        st.error(f"Erro ao atualizar pontuação: {e}")
 
 def get_boto3_client(service_name, region_name='us-east-1', profile_name='bento-grupo4'):
     """
@@ -161,28 +185,51 @@ def check_password():
     def password_entered():
         """Checks whether a password entered by the user is correct."""
         print(f"DEBUG LOGIN: Tentativa de login - Usuário: '{st.session_state['username']}', Senha: '{st.session_state['password']}'")
-        
-        if hmac.compare_digest(st.session_state["username"].strip(), "admin") and \
-        hmac.compare_digest(st.session_state["password"].strip(), "admin123"):
+
+        # Carrega usuários do arquivo JSON
+        try:
+            with open("users.json", "r") as file:
+                users = json.load(file)
+        except FileNotFoundError:
+            print("DEBUG LOGIN: Arquivo users.json não encontrado")
+            st.error("Erro interno de autenticação")
+            st.session_state["password_correct"] = False
+            st.session_state["login_attempt"] = True
+            return
+
+        # Verifica credenciais
+        authenticated = False
+        user_data = None
+
+        username_input = st.session_state["username"].strip()
+        password_input = st.session_state["password"].strip()
+
+        for user in users:
+            if (hmac.compare_digest(username_input, user["user"]) and 
+                hmac.compare_digest(password_input, user["pass"])):
+                authenticated = True
+                user_data = user
+                break
+            
+        if authenticated:
             print("DEBUG LOGIN: Autenticação bem-sucedida")
             st.session_state["password_correct"] = True
             st.session_state["auth_cookie"] = {
-                "user": "admin",
-                "exp": time.time() + (7 * 24 * 60 * 60)
+                "user": user_data["user"],
+                "exp": time.time() + (7 * 24 * 60 * 60)  # Expira em 7 dias
             }
-            
+
             try:
-                st.query_params["auth"] = base64.b64encode(json.dumps(st.session_state["auth_cookie"]).encode()).decode()
-            except:
-                pass
-                
+                st.query_params["auth"] = base64.b64encode(
+                    json.dumps(st.session_state["auth_cookie"]).encode()
+                ).decode()
+            except Exception as e:
+                print(f"DEBUG LOGIN: Erro ao gerar token: {e}")
+
             del st.session_state["password"]
             del st.session_state["username"]
         else:
-            print(f"DEBUG LOGIN: Autenticação falhou - Usuário: '{st.session_state['username']}', Senha: '{st.session_state['password']}'")
-            print(f"DEBUG LOGIN: Comparação - Usuário igual: {st.session_state['username'].strip() == 'admin'}")
-            print(f"DEBUG LOGIN: Comparação - Senha igual: {st.session_state['password'].strip() == 'admin123'}")
-            
+            print(f"DEBUG LOGIN: Autenticação falhou - Usuário: '{username_input}'")
             st.session_state["password_correct"] = False
             st.session_state["login_attempt"] = True
 
@@ -794,6 +841,31 @@ def handle_message_if_content():
             handle_message_with_input(temp_input)
 
 def handle_message_with_input(user_input):
+    # Verifica se a última mensagem foi um quiz
+    if st.session_state.messages and st.session_state.messages[-1].get("is_quiz"):
+        last_msg = st.session_state.messages[-1]
+        resposta_usuario = user_input.strip().upper()
+        pergunta_ia = last_msg["content"]
+
+        pergunta_real = quiz_manager.find_quiz_by_question_text(pergunta_ia)
+
+        if pergunta_real:
+            if quiz_manager.check_answer(pergunta_real["id"], resposta_usuario):
+                st.success("✅ Resposta correta! Você ganhou 1 ponto! 🎉")
+                update_user_score(st.session_state["auth_cookie"]["user"], 1)
+            else:
+                st.warning(f"❌ Resposta incorreta. A correta era: {pergunta_real['resposta_correta']}")
+        else:
+            st.info("⚠️ Não foi possível validar a resposta. Pergunta não reconhecida.")
+
+        # Salva a resposta como mensagem
+        st.session_state.messages.append({
+            "role": "user",
+            "content": f"Resposta ao quiz: {resposta_usuario}",
+            "time": datetime.now().strftime("%H:%M")
+        })
+        return
+    
     """Processa o envio de uma mensagem do usuário com input específico"""
     if user_input.strip():
         is_duplicate = False
@@ -841,7 +913,7 @@ def handle_message_with_input(user_input):
                         "content": assistant_message, 
                         "time": timestamp
                     })
-                    
+
                     if is_first_message:
                         new_title = extract_title_from_response(assistant_message)
                         st.session_state.chat_title = new_title
@@ -850,8 +922,47 @@ def handle_message_with_input(user_input):
                             st.session_state.chat_history[st.session_state.current_chat_index]["title"] = new_title
                         
                 typing_placeholder.empty()
+
+            # DISPARA O QUIZ AQUI 👇
+            st.info("✅ Iniciando geração do quiz...")  # DEBUG 1
             
-            st.rerun()
+            try:
+                with open("quiz.json", "r", encoding="utf-8") as f:
+                    quiz_json = json.load(f)["quiz"]
+                    st.info(f"✅ Quiz carregado com {len(quiz_json)} perguntas")  # DEBUG 2
+            
+                from functions import generate_chat_prompt, invoke_bedrock_model
+            
+                quiz_prompt = generate_chat_prompt(
+                    user_input,
+                    conversation_history=st.session_state.messages,
+                    quiz_json=quiz_json
+                )
+                st.code(quiz_prompt[:500])  # DEBUG 3: exibe parte do prompt para ver se está OK
+            
+                quiz_response = invoke_bedrock_model(
+                    prompt=quiz_prompt,
+                    inference_profile_arn=INFERENCE_PROFILE_ARN
+                )
+            
+                st.info("✅ Quiz recebido da IA")  # DEBUG 4
+                st.code(quiz_response["answer"])  # DEBUG 5: mostra a resposta gerada
+            
+                if quiz_response and "answer" in quiz_response:
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": quiz_response["answer"],
+                        "time": datetime.now().strftime("%H:%M"),
+                        "is_quiz": True
+                    })
+                    st.info("✅ Quiz adicionado à conversa")  # DEBUG 6
+            
+            except Exception as e:
+                st.error(f"❌ Erro ao gerar quiz: {e}")                    
+                
+            # FIM DO QUIZ
+            
+            return
 
 if check_password():
     print("DEBUG AUTH: Verificando senha")
@@ -912,7 +1023,7 @@ if check_password():
         
         st.divider()
         
-        st.button("🔄 Nova Conversa", on_click=create_new_chat, use_container_width=True)
+        st.button("🔄 Nova Conversa", on_click=create_new_chat, use_container_width=True,  key="new_chat_button")
         
         st.divider()
         
@@ -958,7 +1069,7 @@ if check_password():
         #         )
             st.divider()
 
-            if st.button("Logout", use_container_width=True):
+            if st.button("Logout", use_container_width=True, key="logout_button"):
                 logout()
 
     main_col1, main_col2, main_col3 = st.columns([1, 10, 1])
