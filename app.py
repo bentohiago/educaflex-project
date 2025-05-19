@@ -259,40 +259,69 @@ def check_password():
     if not st.session_state["password_correct"]:
         st.markdown("""
             <style>
+                body {
+                    background-color: #0e1117;
+                }
+                .login-container {
+                    max-width: 350px;
+                    margin: auto;
+                    padding: 2rem;
+                    background-color: #1e1e1e;
+                    border-radius: 12px;
+                    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+                    text-align: center;
+                }
+                .logo-img {
+                    width: 240px;
+                    margin-bottom: 1.5rem;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    border-radius: 8px;
+                }
+                .login-container h2 {
+                    color: #ffffff;
+                    margin-bottom: 1.5rem;
+                }
                 .stTextInput > div > div > input {
                     background-color: #f0f2f6;
                     color: #000000;
                 }
-                .login-form {
-                    max-width: 400px;
-                    margin: 0 auto;
-                    padding: 2rem;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    background-color: white;
-                }
-                .login-title {
-                    margin-bottom: 2rem;
-                    text-align: center;
-                    color: #4CAF50;
-                }
-                .login-button {
+                .stButton > button {
                     width: 100%;
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    height: 2.5em;
+                    font-size: 1rem;
                     margin-top: 1rem;
+                }
+                .stButton > button:hover {
+                    background-color: #45a049;
                 }
             </style>
         """, unsafe_allow_html=True)
-
-        st.markdown('<div class="login-form">', unsafe_allow_html=True)
-        st.markdown('<h1 class="login-title">Login</h1>', unsafe_allow_html=True)
-        
+    
+        # Codifica a imagem em base64
+        with open(logo_path, "rb") as f:
+            img_base64 = base64.b64encode(f.read()).decode()
+    
+        # Container do login
+        #st.markdown('<div class="login-container">', unsafe_allow_html=True)
+    
+        # Imagem centralizada
+        st.markdown(f'<img src="data:image/png;base64,{img_base64}" class="logo-img" />', unsafe_allow_html=True)
+    
+        # Título e inputs
+        st.markdown('<h2>Login</h2>', unsafe_allow_html=True)
         st.text_input("Usuário", key="username")
         st.text_input("Senha", type="password", key="password")
         st.button("Entrar", on_click=password_entered, key="login-button")
-        
+    
         if st.session_state["login_attempt"] and not st.session_state["password_correct"]:
             st.error("Usuário ou senha incorretos")
-        
+    
         st.markdown('</div>', unsafe_allow_html=True)
         return False
     else:
