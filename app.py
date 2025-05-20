@@ -9,6 +9,7 @@ from datetime import datetime
 import re
 import base64
 import os
+from quiz import exibir_quiz, encontrar_usuario
 from functions import (
     generate_chat_prompt, format_context, 
     read_pdf_from_uploaded_file, read_txt_from_uploaded_file, read_csv_from_uploaded_file
@@ -20,7 +21,6 @@ INFERENCE_PROFILE_ARN = "arn:aws:bedrock:us-east-1:851614451056:inference-profil
 
 with open("users.json", "r") as file:
     users = json.load(file)
-
 
 def add_javascript():
     """Adiciona JavaScript para melhorar a interação do usuário com o chat"""
@@ -54,6 +54,8 @@ st.set_page_config(
    layout="wide",
    initial_sidebar_state="expanded"
 )
+if "pagina_atual" not in st.session_state:
+    st.session_state.pagina_atual = "Chat"
 
 logo_path = "logo.jpeg"
 
@@ -326,11 +328,8 @@ def check_password():
 
 def logout():
     """Faz logout removendo o cookie de autenticação"""
-    if "auth_cookie" in st.session_state:
-        del st.session_state["auth_cookie"]
-    st.session_state["password_correct"] = False
-    st.session_state["login_attempt"] = False
-    st.rerun()
+    from auth_middleware import logout
+    logout()
 
 def get_rag_context():
     """
@@ -1033,15 +1032,28 @@ if check_password():
     with st.sidebar:
         col1, col2 = st.columns([1, 3])
         with col1:
-            st.image(logo_path, width=50)
+            st.image(logo_path, width=80)
         with col2:
             st.markdown('<h2 style="margin-top: 0;">Chat IA</h2>', unsafe_allow_html=True)
         
         st.divider()
         
-        st.button("🔄 Nova Conversa", on_click=create_new_chat, use_container_width=True,  key="new_chat_button")
-        
+        if st.button("🔄 Nova Conversa", use_container_width=True):
+            create_new_chat()
+            
+        if st.button("💬 Ir para Chat", use_container_width=True):
+            st.session_state.pagina_atual = "Chat"      
+
+        if st.button("🧠 Ir para Quiz", use_container_width=True):
+            st.session_state.pagina_atual = "Quiz"    
+
         st.divider()
+
+        username = st.session_state.get("auth_cookie", {}).get("user", None)
+        if username == "admin":
+            if st.button("📊 Painel do Professor", use_container_width=True):
+                st.session_state.pagina_atual = "Professor"
+            st.divider()
         
         st.markdown("### Minhas Conversas")
         for idx, chat in enumerate(st.session_state.chat_history):
@@ -1083,45 +1095,55 @@ if check_password():
         #             height=150, 
         #             key="direct_text"
         #         )
+
+        st.divider()
+    
+        username = st.session_state.get("auth_cookie", {}).get("user", None)
+        if username:
+            user_data = encontrar_usuario(username)
+            if user_data:
+                r = user_data.get("ranking", {})
+                st.markdown("### 🏆 Ranking")
+                st.markdown(f"- Pontos: **{r.get('pontos', 0)}**")
+                st.markdown(f"- Respondidas: **{r.get('quizzes_respondidos', 0)}**")
+                st.markdown(f"- Corretas: **{r.get('quizzes_corretos', 0)}**")
+
             st.divider()
 
-            if st.button("Logout", use_container_width=True, key="logout_button"):
-                logout()
+        if st.button("Logout", use_container_width=True, key="logout_button"):
+            logout()
 
-    main_col1, main_col2, main_col3 = st.columns([1, 10, 1])
-    
-    with main_col2:
-        add_javascript()
-        if st.session_state.renaming:
-            col1, col2 = st.columns([4, 1])
+    if st.session_state.pagina_atual == "Chat":
+
+        main_col1, main_col2, main_col3 = st.columns([1, 10, 1])
+
+        with main_col2:
+            add_javascript()
+            if st.session_state.renaming:
+                col1, col2 = st.columns([4, 1])
+                with col1:
+                    st.text_input("Título da Conversa", value=st.session_state.chat_title, key="new_chat_title", label_visibility="collapsed")
+                with col2:
+                    st.button("Salvar", on_click=rename_chat)
+            else:
+                col1, col2 = st.columns([10, 1])
+                with col1:
+                    st.markdown(f'<div class="chat-title">{st.session_state.chat_title}</div>', unsafe_allow_html=True)
+                with col2:
+                    if st.button("✏️", help="Renomear conversa"):
+                        st.session_state.renaming = True
+                        st.session_state.new_chat_title = st.session_state.chat_title
+                        st.rerun()
+
+            messages_container = st.container()
+
+            st.markdown("<div style='height: 120px;'></div>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns([5, 1, 1])
+
             with col1:
-                st.text_input("Título da Conversa", value=st.session_state.chat_title, key="new_chat_title", label_visibility="collapsed")
-            with col2:
-                st.button("Salvar", on_click=rename_chat)
-        else:
-            col1, col2 = st.columns([10, 1])
-            with col1:
-                st.markdown(f'<div class="chat-title">{st.session_state.chat_title}</div>', unsafe_allow_html=True)
-            with col2:
-                if st.button("✏️", help="Renomear conversa"):
-                    st.session_state.renaming = True
-                    st.session_state.new_chat_title = st.session_state.chat_title
-                    st.rerun()
-        
-        messages_container = st.container()
-        
-        st.markdown("<div style='height: 120px;'></div>", unsafe_allow_html=True)
-                
-        col1, col2, col3 = st.columns([5, 1, 1])
-
-        with col1:
-            st.text_area("Mensagem", placeholder="Digite sua mensagem aqui...", key="user_input", 
-                height=70, label_visibility="collapsed")
-
-        # with col2:
-        #     file_to_send = st.file_uploader("Anexar arquivo", type=["pdf", "txt", "csv", "doc", "docx", "xls", "xlsx"], 
-        #                                 key="file_to_send", label_visibility="collapsed")
-        #     st.markdown('<div class="attach-icon" title="Anexar arquivo"><i class="fas fa-paperclip"></i></div>', unsafe_allow_html=True)
+                st.text_area("Mensagem", placeholder="Digite sua mensagem aqui...", key="user_input", 
+                    height=70, label_visibility="collapsed")
 
         with col2:
             if st.button("Enviar", key="send_button", use_container_width=True):
@@ -1169,3 +1191,19 @@ if check_password():
                     with st.chat_message("assistant", avatar=logo_path):
                         st.write(message["content"])
                         st.markdown(f"<div class='message-time'>{message['time']}</div>", unsafe_allow_html=True)
+
+            
+    elif st.session_state.pagina_atual == "Quiz":
+        exibir_quiz()
+
+    elif st.session_state.pagina_atual == "Professor":
+        from professor import exibir_painel_professor
+        exibir_painel_professor()
+
+        
+
+
+        # with col2:
+        #     file_to_send = st.file_uploader("Anexar arquivo", type=["pdf", "txt", "csv", "doc", "docx", "xls", "xlsx"], 
+        #                                 key="file_to_send", label_visibility="collapsed")
+        #     st.markdown('<div class="attach-icon" title="Anexar arquivo"><i class="fas fa-paperclip"></i></div>', unsafe_allow_html=True)
