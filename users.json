@@ -1,14 +1,29 @@
 [
-    {
-        "user": "admin",
-        "pass": "admin123"
-    },
-    {
-        "user": "aluno1",
-        "pass": "aluno123"
-    },
-    {
-        "user": "aluno2",
-        "pass": "aluno123"
+  {
+    "user": "admin",
+    "pass": "admin123",
+    "ranking": {
+      "pontos": 0,
+      "quizzes_respondidos": 1,
+      "quizzes_corretos": 0
     }
+  },
+  {
+    "user": "aluno1",
+    "pass": "aluno123",
+    "ranking": {
+      "pontos": 100,
+      "quizzes_respondidos": 21,
+      "quizzes_corretos": 15
+    }
+  },
+  {
+    "user": "aluno2",
+    "pass": "aluno123",
+    "ranking": {
+      "pontos": 20,
+      "quizzes_respondidos": 5,
+      "quizzes_corretos": 4
+    }
+  }
 ]
