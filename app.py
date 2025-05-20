@@ -9,7 +9,6 @@ from datetime import datetime
 import re
 import base64
 import os
-from quiz_manager import QuizManager
 from functions import (
     generate_chat_prompt, format_context, 
     read_pdf_from_uploaded_file, read_txt_from_uploaded_file, read_csv_from_uploaded_file
@@ -21,8 +20,6 @@ INFERENCE_PROFILE_ARN = "arn:aws:bedrock:us-east-1:851614451056:inference-profil
 
 with open("users.json", "r") as file:
     users = json.load(file)
-
-quiz_manager = QuizManager("quiz.json") 
 
 
 def add_javascript():
@@ -870,30 +867,61 @@ def handle_message_if_content():
             handle_message_with_input(temp_input)
 
 def handle_message_with_input(user_input):
-    # Verifica se a última mensagem foi um quiz
-    if st.session_state.messages and st.session_state.messages[-1].get("is_quiz"):
-        last_msg = st.session_state.messages[-1]
-        resposta_usuario = user_input.strip().upper()
-        pergunta_ia = last_msg["content"]
-
-        pergunta_real = quiz_manager.find_quiz_by_question_text(pergunta_ia)
-
-        if pergunta_real:
-            if quiz_manager.check_answer(pergunta_real["id"], resposta_usuario):
-                st.success("✅ Resposta correta! Você ganhou 1 ponto! 🎉")
-                update_user_score(st.session_state["auth_cookie"]["user"], 1)
-            else:
-                st.warning(f"❌ Resposta incorreta. A correta era: {pergunta_real['resposta_correta']}")
-        else:
-            st.info("⚠️ Não foi possível validar a resposta. Pergunta não reconhecida.")
-
-        # Salva a resposta como mensagem
-        st.session_state.messages.append({
-            "role": "user",
-            "content": f"Resposta ao quiz: {resposta_usuario}",
-            "time": datetime.now().strftime("%H:%M")
-        })
-        return
+    """Processa o envio de uma mensagem do usuário com input específico"""
+    if user_input.strip():
+        is_duplicate = False
+        if len(st.session_state.messages) > 0:
+            last_messages = [m for m in st.session_state.messages if m["role"] == "user"]
+            if last_messages and last_messages[-1]["content"] == user_input:
+                print(f"DEBUG: Mensagem duplicada detectada: '{user_input}'")
+                is_duplicate = True
+        
+        if not is_duplicate:
+            print(f"DEBUG: Enviando mensagem: '{user_input}'")
+            timestamp = datetime.now().strftime("%H:%M")
+            st.session_state.messages.append({"role": "user", "content": user_input, "time": timestamp})
+            
+            is_first_message = len(st.session_state.messages) == 1
+            
+            with st.chat_message("assistant", avatar=logo_path):
+                typing_placeholder = st.empty()
+                typing_placeholder.markdown("_Digitando..._")
+                
+                with st.spinner():
+                    current_session_id = "" if is_first_message else st.session_state.session_id
+                    rag_context = get_rag_context()
+                    result = query_bedrock(user_input, current_session_id, context=rag_context, conversation_history=st.session_state.messages)                
+                if result:
+                    assistant_message = result.get('answer', 'Não foi possível obter uma resposta.')
+                    
+                    if "sessionId" in result:
+                        new_session_id = result["sessionId"]
+                        print(f"DEBUG: API retornou sessionId: '{new_session_id}'")
+                        
+                        st.session_state.session_id = new_session_id
+                        print(f"DEBUG: Atualizando session_id para '{new_session_id}'")
+                        
+                        if st.session_state.current_chat_index < len(st.session_state.chat_history):
+                            st.session_state.chat_history[st.session_state.current_chat_index]["id"] = new_session_id
+                            print(f"DEBUG: Histórico atualizado com session_id '{new_session_id}'")
+                    
+                    timestamp = datetime.now().strftime("%H:%M")
+                    st.session_state.messages.append({
+                        "role": "assistant", 
+                        "content": assistant_message, 
+                        "time": timestamp
+                    })
+                    
+                    if is_first_message:
+                        new_title = extract_title_from_response(assistant_message)
+                        st.session_state.chat_title = new_title
+                        
+                        if st.session_state.current_chat_index < len(st.session_state.chat_history):
+                            st.session_state.chat_history[st.session_state.current_chat_index]["title"] = new_title
+                        
+                typing_placeholder.empty()
+            
+            st.rerun()
     
     """Processa o envio de uma mensagem do usuário com input específico"""
     if user_input.strip():
@@ -951,47 +979,6 @@ def handle_message_with_input(user_input):
                             st.session_state.chat_history[st.session_state.current_chat_index]["title"] = new_title
                         
                 typing_placeholder.empty()
-
-            # DISPARA O QUIZ AQUI 👇
-            st.info("✅ Iniciando geração do quiz...")  # DEBUG 1
-            
-            try:
-                with open("quiz.json", "r", encoding="utf-8") as f:
-                    quiz_json = json.load(f)["quiz"]
-                    st.info(f"✅ Quiz carregado com {len(quiz_json)} perguntas")  # DEBUG 2
-            
-                from functions import generate_chat_prompt, invoke_bedrock_model
-            
-                quiz_prompt = generate_chat_prompt(
-                    user_input,
-                    conversation_history=st.session_state.messages,
-                    quiz_json=quiz_json
-                )
-                st.code(quiz_prompt[:500])  # DEBUG 3: exibe parte do prompt para ver se está OK
-            
-                quiz_response = invoke_bedrock_model(
-                    prompt=quiz_prompt,
-                    inference_profile_arn=INFERENCE_PROFILE_ARN
-                )
-            
-                st.info("✅ Quiz recebido da IA")  # DEBUG 4
-                st.code(quiz_response["answer"])  # DEBUG 5: mostra a resposta gerada
-            
-                if quiz_response and "answer" in quiz_response:
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": quiz_response["answer"],
-                        "time": datetime.now().strftime("%H:%M"),
-                        "is_quiz": True
-                    })
-                    st.info("✅ Quiz adicionado à conversa")  # DEBUG 6
-            
-            except Exception as e:
-                st.error(f"❌ Erro ao gerar quiz: {e}")                    
-                
-            # FIM DO QUIZ
-            
-            return
 
 if check_password():
     print("DEBUG AUTH: Verificando senha")
