@@ -9,13 +9,18 @@ from datetime import datetime
 import re
 import base64
 import os
+from quiz import exibir_quiz, encontrar_usuario
 from functions import (
     generate_chat_prompt, format_context, 
     read_pdf_from_uploaded_file, read_txt_from_uploaded_file, read_csv_from_uploaded_file
 )
+
 PROFILE_NAME = os.environ.get("AWS_PROFILE", "")
 
 INFERENCE_PROFILE_ARN = "arn:aws:bedrock:us-east-1:851614451056:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+
+with open("users.json", "r") as file:
+    users = json.load(file)
 
 def add_javascript():
     """Adiciona JavaScript para melhorar a interação do usuário com o chat"""
@@ -49,6 +54,8 @@ st.set_page_config(
    layout="wide",
    initial_sidebar_state="expanded"
 )
+if "pagina_atual" not in st.session_state:
+    st.session_state.pagina_atual = "Chat"
 
 logo_path = "logo.jpeg"
 
@@ -57,6 +64,22 @@ def preprocess_user_message(message):
     Função simples de pré-processamento da mensagem do usuário
     """
     return message
+
+# Função para atualizar pontuação
+def update_user_score(username, points=1):
+    try:
+        with open("users.json", "r+") as file:
+            users = json.load(file)
+            for user in users:
+                if user["user"] == username:
+                    user["score"] = user.get("score", 0) + points
+                    break
+            
+            file.seek(0)
+            json.dump(users, file, indent=4)
+            file.truncate()
+    except Exception as e:
+        st.error(f"Erro ao atualizar pontuação: {e}")
 
 def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
     """
@@ -74,19 +97,7 @@ def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
         print(f"ERRO: Não foi possível acessar a AWS: {str(e)}")
         print("ATENÇÃO: Verifique se o IAM Role está corretamente associado à instância EC2.")
         return None
-    except Exception as e:
-        print(f"INFO: Não foi possível usar o perfil local '{profile_name}', tentando credenciais do IAM role: {str(e)}")
-        try:
-            session = boto3.Session(region_name=region_name)
-            client = session.client(service_name)
-            caller_identity = client.get_caller_identity()
-            print(f"DEBUG: Caller Identity (IAM Role): {caller_identity}")
-            print(f"DEBUG: Using IAM role in region '{region_name}' for service '{service_name}'")
-            return client
-        except Exception as e:
-            print(f"ERRO: Falha ao criar cliente boto3: {str(e)}")
-            return None
-
+    
 def query_bedrock(message, session_id="", model_params=None, context="", conversation_history=None):
     """
     Envia uma mensagem para o Amazon Bedrock com parâmetros de modelo específicos.
@@ -162,28 +173,51 @@ def check_password():
     def password_entered():
         """Checks whether a password entered by the user is correct."""
         print(f"DEBUG LOGIN: Tentativa de login - Usuário: '{st.session_state['username']}', Senha: '{st.session_state['password']}'")
-        
-        if hmac.compare_digest(st.session_state["username"].strip(), "admin") and \
-        hmac.compare_digest(st.session_state["password"].strip(), "admin123"):
+
+        # Carrega usuários do arquivo JSON
+        try:
+            with open("users.json", "r") as file:
+                users = json.load(file)
+        except FileNotFoundError:
+            print("DEBUG LOGIN: Arquivo users.json não encontrado")
+            st.error("Erro interno de autenticação")
+            st.session_state["password_correct"] = False
+            st.session_state["login_attempt"] = True
+            return
+
+        # Verifica credenciais
+        authenticated = False
+        user_data = None
+
+        username_input = st.session_state["username"].strip()
+        password_input = st.session_state["password"].strip()
+
+        for user in users:
+            if (hmac.compare_digest(username_input, user["user"]) and 
+                hmac.compare_digest(password_input, user["pass"])):
+                authenticated = True
+                user_data = user
+                break
+            
+        if authenticated:
             print("DEBUG LOGIN: Autenticação bem-sucedida")
             st.session_state["password_correct"] = True
             st.session_state["auth_cookie"] = {
-                "user": "admin",
-                "exp": time.time() + (7 * 24 * 60 * 60)
+                "user": user_data["user"],
+                "exp": time.time() + (7 * 24 * 60 * 60)  # Expira em 7 dias
             }
-            
+
             try:
-                st.query_params["auth"] = base64.b64encode(json.dumps(st.session_state["auth_cookie"]).encode()).decode()
-            except:
-                pass
-                
+                st.query_params["auth"] = base64.b64encode(
+                    json.dumps(st.session_state["auth_cookie"]).encode()
+                ).decode()
+            except Exception as e:
+                print(f"DEBUG LOGIN: Erro ao gerar token: {e}")
+
             del st.session_state["password"]
             del st.session_state["username"]
         else:
-            print(f"DEBUG LOGIN: Autenticação falhou - Usuário: '{st.session_state['username']}', Senha: '{st.session_state['password']}'")
-            print(f"DEBUG LOGIN: Comparação - Usuário igual: {st.session_state['username'].strip() == 'admin'}")
-            print(f"DEBUG LOGIN: Comparação - Senha igual: {st.session_state['password'].strip() == 'admin123'}")
-            
+            print(f"DEBUG LOGIN: Autenticação falhou - Usuário: '{username_input}'")
             st.session_state["password_correct"] = False
             st.session_state["login_attempt"] = True
 
@@ -213,40 +247,69 @@ def check_password():
     if not st.session_state["password_correct"]:
         st.markdown("""
             <style>
+                body {
+                    background-color: #0e1117;
+                }
+                .login-container {
+                    max-width: 350px;
+                    margin: auto;
+                    padding: 2rem;
+                    background-color: #1e1e1e;
+                    border-radius: 12px;
+                    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+                    text-align: center;
+                }
+                .logo-img {
+                    width: 240px;
+                    margin-bottom: 1.5rem;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    border-radius: 8px;
+                }
+                .login-container h2 {
+                    color: #ffffff;
+                    margin-bottom: 1.5rem;
+                }
                 .stTextInput > div > div > input {
                     background-color: #f0f2f6;
                     color: #000000;
                 }
-                .login-form {
-                    max-width: 400px;
-                    margin: 0 auto;
-                    padding: 2rem;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                    background-color: white;
-                }
-                .login-title {
-                    margin-bottom: 2rem;
-                    text-align: center;
-                    color: #4CAF50;
-                }
-                .login-button {
+                .stButton > button {
                     width: 100%;
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    height: 2.5em;
+                    font-size: 1rem;
                     margin-top: 1rem;
+                }
+                .stButton > button:hover {
+                    background-color: #45a049;
                 }
             </style>
         """, unsafe_allow_html=True)
-
-        st.markdown('<div class="login-form">', unsafe_allow_html=True)
-        st.markdown('<h1 class="login-title">Login</h1>', unsafe_allow_html=True)
-        
+    
+        # Codifica a imagem em base64
+        with open(logo_path, "rb") as f:
+            img_base64 = base64.b64encode(f.read()).decode()
+    
+        # Container do login
+        #st.markdown('<div class="login-container">', unsafe_allow_html=True)
+    
+        # Imagem centralizada
+        st.markdown(f'<img src="data:image/png;base64,{img_base64}" class="logo-img" />', unsafe_allow_html=True)
+    
+        # Título e inputs
+        st.markdown('<h2>Login</h2>', unsafe_allow_html=True)
         st.text_input("Usuário", key="username")
         st.text_input("Senha", type="password", key="password")
         st.button("Entrar", on_click=password_entered, key="login-button")
-        
+    
         if st.session_state["login_attempt"] and not st.session_state["password_correct"]:
             st.error("Usuário ou senha incorretos")
-        
+    
         st.markdown('</div>', unsafe_allow_html=True)
         return False
     else:
@@ -254,11 +317,8 @@ def check_password():
 
 def logout():
     """Faz logout removendo o cookie de autenticação"""
-    if "auth_cookie" in st.session_state:
-        del st.session_state["auth_cookie"]
-    st.session_state["password_correct"] = False
-    st.session_state["login_attempt"] = False
-    st.rerun()
+    from auth_middleware import logout
+    logout()
 
 def get_rag_context():
     """
@@ -326,7 +386,11 @@ def handle_message():
             
             with st.chat_message("assistant", avatar=logo_path):
                 typing_placeholder = st.empty()
-                typing_placeholder.markdown("_Digitando..._")
+                typing_placeholder.markdown("""
+                    <div style="padding: 8px; font-style: italic;">
+                        Digitando...
+                    </div>
+                """, unsafe_allow_html=True)
                 
                 with st.spinner():
                     current_session_id = "" if is_first_message else st.session_state.session_id
@@ -590,7 +654,7 @@ st.markdown("""
         border-radius: 0.5rem;
         margin-bottom: 0.5rem;
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
     
     .user-message {
@@ -846,6 +910,63 @@ def handle_message_with_input(user_input):
                 typing_placeholder.empty()
             
             st.rerun()
+    
+    """Processa o envio de uma mensagem do usuário com input específico"""
+    if user_input.strip():
+        is_duplicate = False
+        if len(st.session_state.messages) > 0:
+            last_messages = [m for m in st.session_state.messages if m["role"] == "user"]
+            if last_messages and last_messages[-1]["content"] == user_input:
+                print(f"DEBUG: Mensagem duplicada detectada: '{user_input}'")
+                is_duplicate = True
+        
+        if not is_duplicate:
+            print(f"DEBUG: Enviando mensagem: '{user_input}'")
+            timestamp = datetime.now().strftime("%H:%M")
+            st.session_state.messages.append({"role": "user", "content": user_input, "time": timestamp})
+            
+            is_first_message = len(st.session_state.messages) == 1
+            
+            with st.chat_message("assistant", avatar=logo_path):
+                typing_placeholder = st.empty()
+                typing_placeholder.markdown("""
+                    <div style="padding: 8px; font-style: italic;">
+                        Digitando...
+                    </div>
+                """, unsafe_allow_html=True)                
+                with st.spinner():
+                    current_session_id = "" if is_first_message else st.session_state.session_id
+                    rag_context = get_rag_context()
+                    result = query_bedrock(user_input, current_session_id, context=rag_context, conversation_history=st.session_state.messages)                
+                if result:
+                    assistant_message = result.get('answer', 'Não foi possível obter uma resposta.')
+                    
+                    if "sessionId" in result:
+                        new_session_id = result["sessionId"]
+                        print(f"DEBUG: API retornou sessionId: '{new_session_id}'")
+                        
+                        st.session_state.session_id = new_session_id
+                        print(f"DEBUG: Atualizando session_id para '{new_session_id}'")
+                        
+                        if st.session_state.current_chat_index < len(st.session_state.chat_history):
+                            st.session_state.chat_history[st.session_state.current_chat_index]["id"] = new_session_id
+                            print(f"DEBUG: Histórico atualizado com session_id '{new_session_id}'")
+                    
+                    timestamp = datetime.now().strftime("%H:%M")
+                    st.session_state.messages.append({
+                        "role": "assistant", 
+                        "content": assistant_message, 
+                        "time": timestamp
+                    })
+
+                    if is_first_message:
+                        new_title = extract_title_from_response(assistant_message)
+                        st.session_state.chat_title = new_title
+                        
+                        if st.session_state.current_chat_index < len(st.session_state.chat_history):
+                            st.session_state.chat_history[st.session_state.current_chat_index]["title"] = new_title
+                        
+                typing_placeholder.empty()
 
 if check_password():
     print("DEBUG AUTH: Verificando senha")
@@ -900,15 +1021,28 @@ if check_password():
     with st.sidebar:
         col1, col2 = st.columns([1, 3])
         with col1:
-            st.image(logo_path, width=50)
+            st.image(logo_path, width=80)
         with col2:
             st.markdown('<h2 style="margin-top: 0;">Chat IA</h2>', unsafe_allow_html=True)
         
         st.divider()
         
-        st.button("🔄 Nova Conversa", on_click=create_new_chat, use_container_width=True)
-        
+        if st.button("🔄 Nova Conversa", use_container_width=True):
+            create_new_chat()
+            
+        if st.button("💬 Ir para Chat", use_container_width=True):
+            st.session_state.pagina_atual = "Chat"      
+
+        if st.button("🧠 Ir para Quiz", use_container_width=True):
+            st.session_state.pagina_atual = "Quiz"    
+
         st.divider()
+
+        username = st.session_state.get("auth_cookie", {}).get("user", None)
+        if username == "admin":
+            if st.button("📊 Painel do Professor", use_container_width=True):
+                st.session_state.pagina_atual = "Professor"
+            st.divider()
         
         st.markdown("### Minhas Conversas")
         for idx, chat in enumerate(st.session_state.chat_history):
@@ -950,49 +1084,55 @@ if check_password():
         #             height=150, 
         #             key="direct_text"
         #         )
+
+        st.divider()
+    
+        username = st.session_state.get("auth_cookie", {}).get("user", None)
+        if username:
+            user_data = encontrar_usuario(username)
+            if user_data:
+                r = user_data.get("ranking", {})
+                st.markdown("### 🏆 Ranking")
+                st.markdown(f"- Pontos: **{r.get('pontos', 0)}**")
+                st.markdown(f"- Respondidas: **{r.get('quizzes_respondidos', 0)}**")
+                st.markdown(f"- Corretas: **{r.get('quizzes_corretos', 0)}**")
+
             st.divider()
 
-            if st.button("Logout", use_container_width=True):
-                logout()
+        if st.button("Logout", use_container_width=True, key="logout_button"):
+            logout()
 
-    main_col1, main_col2, main_col3 = st.columns([1, 10, 1])
-    
-    with main_col2:
-        add_javascript()
-        if st.session_state.renaming:
-            col1, col2 = st.columns([4, 1])
+    if st.session_state.pagina_atual == "Chat":
+
+        main_col1, main_col2, main_col3 = st.columns([1, 10, 1])
+
+        with main_col2:
+            add_javascript()
+            if st.session_state.renaming:
+                col1, col2 = st.columns([4, 1])
+                with col1:
+                    st.text_input("Título da Conversa", value=st.session_state.chat_title, key="new_chat_title", label_visibility="collapsed")
+                with col2:
+                    st.button("Salvar", on_click=rename_chat)
+            else:
+                col1, col2 = st.columns([10, 1])
+                with col1:
+                    st.markdown(f'<div class="chat-title">{st.session_state.chat_title}</div>', unsafe_allow_html=True)
+                with col2:
+                    if st.button("✏️", help="Renomear conversa"):
+                        st.session_state.renaming = True
+                        st.session_state.new_chat_title = st.session_state.chat_title
+                        st.rerun()
+
+            messages_container = st.container()
+
+            st.markdown("<div style='height: 120px;'></div>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns([5, 1, 1])
+
             with col1:
-                st.text_input("Título da Conversa", value=st.session_state.chat_title, key="new_chat_title", label_visibility="collapsed")
-            with col2:
-                st.button("Salvar", on_click=rename_chat)
-        else:
-            col1, col2 = st.columns([10, 1])
-            with col1:
-                st.markdown(f'<div class="chat-title">{st.session_state.chat_title}</div>', unsafe_allow_html=True)
-            with col2:
-                if st.button("✏️", help="Renomear conversa"):
-                    st.session_state.renaming = True
-                    st.session_state.new_chat_title = st.session_state.chat_title
-                    st.rerun()
-        
-        messages_container = st.container()
-        
-        st.markdown("<div style='height: 120px;'></div>", unsafe_allow_html=True)
-        
-        st.markdown('<div class="input-container">', unsafe_allow_html=True)
-        
-        st.markdown('<div class="input-container">', unsafe_allow_html=True)
-
-        col1, col2, col3 = st.columns([5, 1, 1])
-
-        with col1:
-            st.text_area("Mensagem", placeholder="Digite sua mensagem aqui...", key="user_input", 
-                height=70, label_visibility="collapsed")
-
-        # with col2:
-        #     file_to_send = st.file_uploader("Anexar arquivo", type=["pdf", "txt", "csv", "doc", "docx", "xls", "xlsx"], 
-        #                                 key="file_to_send", label_visibility="collapsed")
-        #     st.markdown('<div class="attach-icon" title="Anexar arquivo"><i class="fas fa-paperclip"></i></div>', unsafe_allow_html=True)
+                st.text_area("Mensagem", placeholder="Digite sua mensagem aqui...", key="user_input", 
+                    height=70, label_visibility="collapsed")
 
         with col2:
             if st.button("Enviar", key="send_button", use_container_width=True):
@@ -1040,3 +1180,19 @@ if check_password():
                     with st.chat_message("assistant", avatar=logo_path):
                         st.write(message["content"])
                         st.markdown(f"<div class='message-time'>{message['time']}</div>", unsafe_allow_html=True)
+
+            
+    elif st.session_state.pagina_atual == "Quiz":
+        exibir_quiz()
+
+    elif st.session_state.pagina_atual == "Professor":
+        from professor import exibir_painel_professor
+        exibir_painel_professor()
+
+        
+
+
+        # with col2:
+        #     file_to_send = st.file_uploader("Anexar arquivo", type=["pdf", "txt", "csv", "doc", "docx", "xls", "xlsx"], 
+        #                                 key="file_to_send", label_visibility="collapsed")
+        #     st.markdown('<div class="attach-icon" title="Anexar arquivo"><i class="fas fa-paperclip"></i></div>', unsafe_allow_html=True)

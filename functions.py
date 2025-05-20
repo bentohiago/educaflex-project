@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import PyPDF2
 
-PROFILE_NAME = os.environ.get('AWS_PROFILE', 'bento-grupo4')
+PROFILE_NAME = os.environ.get('AWS_PROFILE', '')
 
 def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
     """
@@ -24,19 +24,7 @@ def get_boto3_client(service_name, region_name='us-east-1', profile_name=''):
         print(f"ERRO: Não foi possível acessar a AWS: {str(e)}")
         print("ATENÇÃO: Verifique se o IAM Role está corretamente associado à instância EC2.")
         return None
-    except Exception as e:
-        print(f"INFO: Não foi possível usar o perfil local '{profile_name}', tentando credenciais do IAM role: {str(e)}")
-        try:
-            session = boto3.Session(region_name=region_name)
-            client = session.client(service_name)
-            caller_identity = client.get_caller_identity()
-            print(f"DEBUG: Caller Identity (IAM Role): {caller_identity}")
-            print(f"DEBUG: Using IAM role in region '{region_name}' for service '{service_name}'")
-            return client
-        except Exception as e:
-            print(f"ERRO: Falha ao criar cliente boto3: {str(e)}")
-            return None
-
+    
 def read_pdf(file_path):
     """Lê o conteúdo de um arquivo PDF e retorna como string."""
     try:
@@ -108,17 +96,26 @@ def generate_chat_prompt(user_message, conversation_history=None, context=""):
       conversation_context += "\n"
 
     full_prompt = f"{system_prompt}\n\n{conversation_context}{context}Usuário: {user_message}\n\nAssistente:"
-    
+
     return full_prompt
 
 #ALTERAR
 def invoke_bedrock_model(prompt, inference_profile_arn, model_params=None):
     """
     Invoca um modelo no Amazon Bedrock usando um Inference Profile.
+    
+    Args:
+        prompt (str): O prompt completo para o modelo
+        inference_profile_arn (str): ARN do perfil de inferência
+        model_params (dict, optional): Parâmetros do modelo. Defaults to None.
+
+    Returns:
+        dict: Resposta do modelo com estrutura enriquecida.
     """
+    # Parâmetros padrão do modelo
     if model_params is None:
         model_params = {
-            "temperature": 0.7,
+            "temperature": 0.7, 
             "top_p": 0.9,
             "top_k": 200,
             "max_tokens": 1024,
@@ -127,55 +124,57 @@ def invoke_bedrock_model(prompt, inference_profile_arn, model_params=None):
     bedrock_runtime = get_boto3_client('bedrock-runtime')
 
     if not bedrock_runtime:
-        return {
-        "error": "Não foi possível conectar ao serviço Bedrock.",
-        "answer": "Erro de conexão com o modelo.",
-        "sessionId": str(uuid.uuid4())
+        error_response = {
+            "error": "Não foi possível conectar ao serviço Bedrock.",
+            "answer": "Erro de conexão com o modelo.",
+            "sessionId": str(uuid.uuid4())
         }
+        return error_response
 
     try:
+        messages = [{
+            "role": "user",
+            "content": [{"type": "text", "text": prompt}]
+        }]
+
         body = json.dumps({
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": model_params["max_tokens"],
-        "temperature": model_params["temperature"],
-        "top_p": model_params["top_p"],
-        "top_k": model_params["top_k"],
-        "messages": [
-        {
-        "role": "user",
-        "content": [
-        {
-        "type": "text",
-        "text": prompt
-        }
-    ]
-    }
-    ]
-    })
+            "anthropic_version": "bedrock-2023-05-31",
+            "max_tokens": model_params["max_tokens"],
+            "temperature": model_params["temperature"],
+            "top_p": model_params["top_p"],
+            "top_k": model_params["top_k"],
+            "messages": messages,
+            "stop_sequences": ["\n\nUsuário:"]
+        })
 
         response = bedrock_runtime.invoke_model(
-        modelId=inference_profile_arn,  # Usando o ARN do Inference Profile
-        body=body,
-        contentType="application/json",
-        accept="application/json"
-    )
+            modelId=inference_profile_arn,
+            body=body,
+            contentType="application/json",
+            accept="application/json"
+        )
         
         response_body = json.loads(response['body'].read())
         answer = response_body['content'][0]['text']
-            
-        return {
+        
+        # Estrutura de retorno unificada
+        response_data = {
             "answer": answer,
-            "sessionId": str(uuid.uuid4())
+            "sessionId": str(uuid.uuid4()),
+            "timestamp": datetime.now().isoformat()
         }
+        
+        return response_data
         
     except Exception as e:
         print(f"ERRO: Falha na invocação do modelo Bedrock: {str(e)}")
-        print(f"ERRO: Exception details: {e}")
-        return {
+        error_response = {
             "error": str(e),
             "answer": f"Ocorreu um erro ao processar sua solicitação: {str(e)}. Por favor, tente novamente.",
-            "sessionId": str(uuid.uuid4())
+            "sessionId": str(uuid.uuid4()),
         }
+        return error_response
+    
 def read_pdf_from_uploaded_file(uploaded_file):
     """Lê o conteúdo de um arquivo PDF carregado pelo Streamlit."""
     try:

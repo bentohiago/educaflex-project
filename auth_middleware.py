@@ -154,9 +154,15 @@ def check_password_with_cookie():
         return True
 
 def logout():
-    """Faz logout removendo o cookie de autenticação"""
-    if "auth_cookie" in st.session_state:
-        del st.session_state["auth_cookie"]
+    # Limpa dados da sessão
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+
+    # Limpa parâmetros da URL (como ?auth=...)
+    st.experimental_set_query_params()
+
+    # Força recarregamento da página
+    st.rerun()
     
     st.session_state["password_correct"] = False
     st.session_state["login_attempt"] = False
